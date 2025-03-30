@@ -1,10 +1,5 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div>
-      <Image src="/logo.svg" height={50} width={50} alt="Logo" />
-      <p className="text-xl font-semibold tracking-tight">Watchly2</p>
-    </div>
+    <div className="bg-gray-50 w-screen h-screen p-1">I will Load Videos!</div>
   );
 }
