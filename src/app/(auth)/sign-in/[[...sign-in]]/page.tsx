@@ -7,33 +7,27 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { URL } from "@/lib/constants";
+import { useMutation } from "@tanstack/react-query";
+import { submitFormData } from "@/lib/api";
 
 export default function SignIn() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
+  const { mutate } = useMutation({
+    mutationFn: submitFormData,
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = {
-      username: username,
-      password: password,
-    };
-    try {
-      const response = await fetch("http://localhost:3000/api/v1/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      if (response.status === 200) {
-        const result = await response.json();
-        alert(result.message);
-        router.push("/");
-      }
-    } catch (error) {
-      console.error("Error submitting form", error);
-    }
+    mutate(form);
+    router.push("/");
   };
 
   return (
@@ -54,9 +48,10 @@ export default function SignIn() {
             <Input
               id="username"
               type="text"
+              name="username"
               placeholder="arihantjain123"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={form.username}
+              onChange={handleChange}
               required
             />
           </div>
@@ -68,8 +63,9 @@ export default function SignIn() {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
+                value={form.password}
+                onChange={handleChange}
                 required
               />
               <button
