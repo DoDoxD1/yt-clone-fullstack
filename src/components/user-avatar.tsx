@@ -1,0 +1,44 @@
+import { cn } from "@/lib/utils";
+import React from "react";
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { cva, type VariantProps } from "class-variance-authority";
+
+const avatarVariants = cva("", {
+  variants: {
+    size: {
+      default: "h-9 w-9",
+      xs: "h-5 w-5",
+      sm: "h-6 w-6",
+      md: "h-8 w-8",
+      lg: "h-10 w-10",
+      xl: "h-[160px] w-[160px]",
+    },
+    defaultVariants: {
+      size: "default",
+    },
+  },
+});
+
+interface UserAvatarProps extends VariantProps<typeof avatarVariants> {
+  avatarUrl: string;
+  name: string;
+  className?: string;
+  onClick?: () => void;
+}
+
+export default function UserAvatar({
+  avatarUrl,
+  name,
+  size,
+  className,
+  onClick,
+}: UserAvatarProps) {
+  return (
+    <Avatar
+      className={cn(avatarVariants({ size, className }))}
+      onClick={onClick}
+    >
+      <AvatarImage src={avatarUrl} alt={name}></AvatarImage>
+    </Avatar>
+  );
+}

@@ -9,10 +9,11 @@ export const fetchUser = async () => {
   const res = await fetch(URL + "/users/get-user", {
     method: "GET",
     credentials: "include",
+    cache: "force-cache",
   });
   if (!res.ok) throw new Error("Failed to load user details");
   const user = await res.json();
-  return user;
+  return user?.data;
 };
 
 export const loginUser = async (formData: {

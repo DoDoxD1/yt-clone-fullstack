@@ -7,10 +7,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Image from "next/image";
 import Link from "next/link";
 import { ClapperboardIcon, LogOutIcon } from "lucide-react";
 import { logoutUser } from "@/lib/api";
+import UserAvatar from "@/components/user-avatar";
 
 interface UserButtonProps {
   user: {
@@ -35,12 +35,10 @@ export default function UserButton({ user, onClick }: UserButtonProps) {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="border-none outline-none focus:outline-none">
-        <Image
-          className="rounded-full cursor-pointer h-10 w-10"
-          src={user.avatar}
-          height={32}
-          width={32}
-          alt={user.fullName.slice(0, 1)}
+        <UserAvatar
+          avatarUrl={user?.avatar}
+          name={user?.fullName ?? "user"}
+          className="size-md hover:opacity-80 transition-opacity"
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40">

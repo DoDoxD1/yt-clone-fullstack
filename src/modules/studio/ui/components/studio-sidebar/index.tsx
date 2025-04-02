@@ -1,3 +1,4 @@
+"use client";
 import {
   Sidebar,
   SidebarContent,
@@ -12,20 +13,8 @@ import { LogOutIcon, VideoIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import StudioSidebarHeader from "./studio-sidebar-header";
-interface UserProps {
-  user: {
-    _id: string;
-    watchHistory: string[];
-    username: string;
-    email: string;
-    fullName: string;
-    avatar: string;
-    coverImage: string;
-    admin: boolean;
-  };
-  isLoading: any;
-}
-export default function StudioSidebar({ user, isLoading }: UserProps) {
+
+export default function StudioSidebar() {
   return (
     <Sidebar className="pt-16 z-40" collapsible="icon">
       <SidebarContent className="bg-background">

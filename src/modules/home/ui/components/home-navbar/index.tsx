@@ -38,7 +38,7 @@ export default function HomeNavbar() {
           {isLoading ? null : !user ? (
             <AuthButton />
           ) : (
-            <UserButton user={user?.data} />
+            <UserButton user={user} />
           )}
         </div>
       </div>
