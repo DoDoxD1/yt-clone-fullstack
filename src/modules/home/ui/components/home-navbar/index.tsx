@@ -4,16 +4,25 @@ import SearchInput from "./search-input";
 import AuthButton from "@/modules/auth/ui/components/auth-button";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUser } from "@/lib/api";
 import UserButton from "./user-button";
 
 export default function HomeNavbar() {
+  const [isMounted, setIsMounted] = useState(false);
+
   const { data: user } = useQuery({
     queryKey: ["get-user"],
     queryFn: fetchUser,
   });
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 h-16 bg-white flex items-center px-2 pr-5 z-50">

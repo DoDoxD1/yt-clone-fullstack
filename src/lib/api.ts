@@ -10,12 +10,11 @@ export const fetchUser = async () => {
     method: "GET",
     credentials: "include",
   });
-  console.log(res);
   if (!res.ok) throw new Error("Failed to load user details");
   return res.json();
 };
 
-export const submitFormData = async (formData: {
+export const loginUser = async (formData: {
   username: string;
   password: string;
 }) => {
@@ -28,10 +27,14 @@ export const submitFormData = async (formData: {
   if (!response.ok) {
     throw new Error("Failed to submit form");
   }
-  if (response.status === 200) {
-    const data = await response.json();
-    const cookie = await response;
-    console.log(data.data.user);
-  }
   return response.json();
+};
+
+export const logoutUser = async () => {
+  const res = await fetch(URL + "/users/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Failed to sign out");
+  return res.json();
 };

@@ -71,7 +71,7 @@ function FilterCarousel({ categories, onSelect }: CategoryListProps) {
               All
             </Badge>
           </CarouselItem>
-          {categories.map((category: { _id: any; title: string }) => (
+          {categories?.map((category: { _id: any; title: string }) => (
             <CarouselItem
               key={category._id}
               className="pl-3 basis-auto"

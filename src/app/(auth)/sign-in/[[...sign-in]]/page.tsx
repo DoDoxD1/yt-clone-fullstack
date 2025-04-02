@@ -7,17 +7,16 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { URL } from "@/lib/constants";
-import { useMutation } from "@tanstack/react-query";
-import { submitFormData } from "@/lib/api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { fetchUser, loginUser } from "@/lib/api";
 
 export default function SignIn() {
+  const router = useRouter();
   const [form, setForm] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
 
   const { mutate } = useMutation({
-    mutationFn: submitFormData,
+    mutationFn: loginUser,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +28,17 @@ export default function SignIn() {
     mutate(form);
     router.push("/");
   };
+
+  const { data: user } = useQuery({
+    queryKey: ["get-user"],
+    queryFn: fetchUser,
+  });
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
@@ -80,19 +90,6 @@ export default function SignIn() {
             </div>
           </div>
           {/* Button */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 ">
-              <Checkbox id="remeber" />
-              <Label htmlFor="remember">Remember me</Label>
-            </div>
-            <Button
-              variant="link"
-              className="text-sm text-primary-500"
-              onClick={(e) => e.preventDefault()}
-            >
-              Forgot Password?
-            </Button>
-          </div>
           <Button type="submit" className="w-full" size="lg">
             Sign In
           </Button>
