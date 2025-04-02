@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUser } from "@/lib/api";
 import UserButton from "./user-button";
 
-export default function HomeNavbar() {
+export default function StudioNavbar() {
   const { data: user, isLoading } = useQuery({
     queryKey: ["get-user"],
     queryFn: fetchUser,
@@ -20,18 +20,12 @@ export default function HomeNavbar() {
         {/* Menu and logo */}
         <div className="flex items-center flex-shrink-0">
           <SidebarTrigger />
-          <Link href="/">
+          <Link href="/studio">
             <div className="flex p-4 items-center gap-1">
               <Image src="/logo.svg" alt="Logo" height={32} width={32} />
-              <p className="text-xl font-semibold tracking-tight">NewTube</p>
+              <p className="text-xl font-semibold tracking-tight">Studio</p>
             </div>
           </Link>
-        </div>
-
-        {/* Search Bar */}
-
-        <div className="flex-1 flex justify-center max-w-[720px] mx-auto">
-          <SearchInput />
         </div>
 
         <div className="flex-shrink-0 items-center flex gap-4">
