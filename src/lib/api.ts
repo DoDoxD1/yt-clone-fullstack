@@ -11,7 +11,8 @@ export const fetchUser = async () => {
     credentials: "include",
   });
   if (!res.ok) throw new Error("Failed to load user details");
-  return res.json();
+  const user = await res.json();
+  return user;
 };
 
 export const loginUser = async (formData: {

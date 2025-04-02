@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import Link from "next/link";
-import { Clapperboard, ClapperboardIcon, LogOutIcon } from "lucide-react";
+import { ClapperboardIcon, LogOutIcon } from "lucide-react";
 import { logoutUser } from "@/lib/api";
 
 interface UserButtonProps {

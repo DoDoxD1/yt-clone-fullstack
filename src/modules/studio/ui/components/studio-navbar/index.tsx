@@ -1,21 +1,26 @@
-"use client";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import SearchInput from "./search-input";
 import AuthButton from "@/modules/auth/ui/components/auth-button";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchUser } from "@/lib/api";
-import UserButton from "./user-button";
+import UserButton from "@/modules/auth/ui/components/user-button";
 
-export default function StudioNavbar() {
-  const { data: user, isLoading } = useQuery({
-    queryKey: ["get-user"],
-    queryFn: fetchUser,
-  });
+interface UserProps {
+  user: {
+    _id: string;
+    watchHistory: string[];
+    username: string;
+    email: string;
+    fullName: string;
+    avatar: string;
+    coverImage: string;
+    admin: boolean;
+  };
+  isLoading: any;
+}
+
+export default function StudioNavbar({ user, isLoading }: UserProps) {
   return (
-    <nav className="fixed top-0 left-0 right-0 h-16 bg-white flex items-center px-2 pr-5 z-50">
+    <nav className="fixed top-0 left-0 right-0 h-16 bg-white flex items-center px-2 pr-5 z-50 border-b shadow-md">
       <div className="flex items-center gap-4 w-full">
         {/* Menu and logo */}
         <div className="flex items-center flex-shrink-0">
@@ -28,11 +33,13 @@ export default function StudioNavbar() {
           </Link>
         </div>
 
+        <div className="flex-1" />
+
         <div className="flex-shrink-0 items-center flex gap-4">
           {isLoading ? null : !user ? (
             <AuthButton />
           ) : (
-            <UserButton user={user?.data} />
+            <UserButton user={user} />
           )}
         </div>
       </div>

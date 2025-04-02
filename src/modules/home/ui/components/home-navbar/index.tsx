@@ -7,7 +7,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUser } from "@/lib/api";
-import UserButton from "./user-button";
+import UserButton from "@/modules/auth/ui/components/user-button";
 
 export default function HomeNavbar() {
   const { data: user, isLoading } = useQuery({
