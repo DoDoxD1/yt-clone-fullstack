@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUser } from "@/lib/api";
 import UserButton from "@/modules/auth/ui/components/user-button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function HomeNavbar() {
   const { data: user, isLoading } = useQuery({
@@ -35,7 +36,9 @@ export default function HomeNavbar() {
         </div>
 
         <div className="flex-shrink-0 items-center flex gap-4">
-          {isLoading ? null : !user ? (
+          {isLoading ? (
+            <Skeleton className="w-12 h-12 rounded-full" />
+          ) : !user ? (
             <AuthButton />
           ) : (
             <UserButton user={user} />

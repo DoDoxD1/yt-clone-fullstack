@@ -1,14 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchUser, loginUser } from "@/lib/api";
+import { useMutation } from "@tanstack/react-query";
+import { loginUser } from "@/lib/api";
 
 export default function SignIn() {
   const router = useRouter();
@@ -28,17 +27,6 @@ export default function SignIn() {
     mutate(form);
     router.push("/");
   };
-
-  const { data: user } = useQuery({
-    queryKey: ["get-user"],
-    queryFn: fetchUser,
-  });
-
-  useEffect(() => {
-    if (user) {
-      router.push("/");
-    }
-  }, [user, router]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
