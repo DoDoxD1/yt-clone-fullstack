@@ -43,3 +43,71 @@ export const logoutUser = async () => {
   if (!res.ok) throw new Error("Failed to sign out");
   return res.json();
 };
+
+// export const registerUser = async (userData: {
+//   username: string;
+//   password: string;
+//   email: string;
+//   fullName: string;
+//   avatar: File | undefined;
+//   coverImage: File | undefined;
+// }) => {
+//   try {
+//     console.log(userData);
+//     const response = await fetch(URL + "/users/register", {
+//       method: "POST",
+//       body: JSON.stringify(userData),
+//     });
+//     if (!response.ok) {
+//       const errorMessage = await response.text();
+//       throw new Error(`Error Sign-Up: ${response.status} - ${errorMessage}`);
+//       // throw new Error("Error Sign-Up");
+//     }
+//     return response.json();
+//   } catch (error: any) {
+//     console.error("Error Sign-Up", error);
+//     throw new Error(error);
+//   }
+// };
+
+export const registerUser = async (userData: {
+  username: string;
+  password: string;
+  fullName: string;
+  email: string;
+  avatar: File | undefined;
+  coverImage: File | undefined;
+}) => {
+  try {
+    const formData = new FormData();
+
+    // Add text fields
+    formData.append("fullName", userData.fullName);
+    formData.append("email", userData.email);
+    formData.append("username", userData.username);
+    formData.append("password", userData.password);
+
+    // Add files
+    if (userData.avatar) {
+      formData.append("avatar", userData.avatar);
+    }
+
+    if (userData.coverImage) {
+      formData.append("coverImage", userData.coverImage);
+    }
+
+    const response = await fetch("/api/users/register", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(errorData || "Registration failed");
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
