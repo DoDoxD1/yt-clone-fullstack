@@ -19,16 +19,20 @@ export const loginUser = async (formData: {
   username: string;
   password: string;
 }) => {
-  const response = await fetch(URL + "/users/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(formData),
-    credentials: "include",
-  });
-  if (!response.ok) {
-    throw new Error("Failed to submit form");
+  try {
+    const response = await fetch(URL + "/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error("Invalid credentials");
+    }
+    return response.json();
+  } catch (error: any) {
+    throw new Error(error.message || "Failed to login. Please try again.");
   }
-  return response.json();
 };
 
 export const logoutUser = async () => {

@@ -6,16 +6,33 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginUser } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function SignIn() {
   const router = useRouter();
   const [form, setForm] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { mutate } = useMutation({
     mutationFn: loginUser,
+    onSuccess: (userData) => {
+      // Update the user data in cache immediately
+      queryClient.setQueryData(["get-user"], userData);
+      // Navigate only after successful login and cache update
+      router.push("/");
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Authentication failed",
+        description: error.message || "Invalid credentials. Please try again.",
+      });
+    },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +42,6 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     mutate(form);
-    router.push("/");
   };
 
   return (
@@ -47,7 +63,7 @@ export default function SignIn() {
               id="username"
               type="text"
               name="username"
-              placeholder="arihantjain123"
+              placeholder="username"
               value={form.username}
               onChange={handleChange}
               required
@@ -86,6 +102,7 @@ export default function SignIn() {
           <Link href={"/sign-up"}>Don't have an acoount? Sign Up</Link>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 }
