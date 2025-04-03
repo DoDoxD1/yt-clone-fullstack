@@ -111,3 +111,28 @@ export const registerUser = async (userData: {
     throw error;
   }
 };
+
+export const fetchUserVideos = async () => {
+  try {
+    const res = await fetch(URL + "/dashboard/videos", {
+      method: "GET",
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to load user videos");
+    const videos = await res.json();
+    return videos?.data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const fetchVideos = async () => {
+  try {
+    const res = await fetch(URL + "/videos");
+    if (!res.ok) throw new Error("Failed to fetch videos");
+    const videos = await res.json();
+    return videos?.data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
