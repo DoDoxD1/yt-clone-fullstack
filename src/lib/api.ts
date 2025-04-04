@@ -136,3 +136,19 @@ export const fetchVideos = async () => {
     throw new Error(error);
   }
 };
+
+export const createMockVideo = async () => {
+  try {
+    const response = await fetch(URL + "/videos/mock-video", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error("Error while creating the video!");
+    }
+    return response.json();
+  } catch (error: any) {
+    throw new Error(error.message || "Error while creating the video!");
+  }
+};
