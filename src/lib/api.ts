@@ -126,9 +126,24 @@ export const fetchUserVideos = async () => {
   }
 };
 
-export const fetchVideos = async () => {
+export interface FetchOptions {
+  cursor?: string;
+  limit: number;
+  sortOrder: "asc" | "desc";
+}
+
+export const fetchVideos = async (options: FetchOptions) => {
   try {
-    const res = await fetch(URL + "/videos");
+    const { cursor, limit, sortOrder } = options;
+    // Build query string manually
+    // console.log(limit);
+    let queryParams = new URLSearchParams();
+    if (cursor) queryParams.append("cursor", cursor);
+    queryParams.append("limit", limit.toString());
+    queryParams.append("sortOrder", sortOrder);
+    const url = `${URL}/videos?${queryParams.toString()}`;
+
+    const res = await fetch(url);
     if (!res.ok) throw new Error("Failed to fetch videos");
     const videos = await res.json();
     return videos?.data;

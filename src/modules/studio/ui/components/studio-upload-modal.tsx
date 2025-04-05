@@ -14,7 +14,7 @@ export default function StudioUploadModal() {
     onSuccess: (response) => {
       //TODO: refresh videos
       queryClient.invalidateQueries({ queryKey: ["get-user-videos"] });
-      toast.success("video Created!");
+      toast.success("Video Created!");
     },
     onError: (error) => {
       toast.error(error.message);
