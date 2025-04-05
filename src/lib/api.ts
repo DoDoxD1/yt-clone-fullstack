@@ -112,13 +112,30 @@ export const registerUser = async (userData: {
   }
 };
 
-export const fetchUserVideos = async () => {
+export interface FetchVideosOptions {
+  cursor?: string;
+  limit: number;
+  sortOrder: "asc" | "desc";
+}
+
+export const fetchUserVideos = async (options: FetchVideosOptions) => {
   try {
-    const res = await fetch(URL + "/dashboard/videos", {
-      method: "GET",
+    const { cursor, limit, sortOrder } = options;
+    // const res = await fetch(URL + "", {
+    //   method: "GET",
+    //   credentials: "include",
+    // });
+
+    let queryParams = new URLSearchParams();
+    if (cursor) queryParams.append("cursor", cursor);
+    queryParams.append("limit", limit.toString());
+    queryParams.append("sortOrder", sortOrder);
+    const url = `${URL}/dashboard/videos?${queryParams.toString()}`;
+
+    const res = await fetch(url, {
       credentials: "include",
     });
-    if (!res.ok) throw new Error("Failed to load user videos");
+    if (!res.ok) throw new Error("Failed to fetch user videos");
     const videos = await res.json();
     return videos?.data;
   } catch (error: any) {
@@ -126,13 +143,7 @@ export const fetchUserVideos = async () => {
   }
 };
 
-export interface FetchOptions {
-  cursor?: string;
-  limit: number;
-  sortOrder: "asc" | "desc";
-}
-
-export const fetchVideos = async (options: FetchOptions) => {
+export const fetchVideos = async (options: FetchVideosOptions) => {
   try {
     const { cursor, limit, sortOrder } = options;
     // Build query string manually

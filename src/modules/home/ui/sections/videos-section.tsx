@@ -4,7 +4,6 @@ import { DEFAULT_LIMIT } from "@/constants";
 import { fetchVideos } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export default function VideosSection() {
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
