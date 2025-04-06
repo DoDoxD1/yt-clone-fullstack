@@ -171,10 +171,59 @@ export const createMockVideo = async () => {
       credentials: "include",
     });
     if (!response.ok) {
+      console.log(response);
       throw new Error("Error while creating the video!");
     }
     return response.json();
   } catch (error: any) {
+    console.log(error);
     throw new Error(error.message || "Error while creating the video!");
+  }
+};
+
+export const createVideo = async (data: {
+  videoFile: File;
+  thumbnailFile: File;
+  title: string;
+  description: string;
+  category: string;
+}) => {
+  try {
+    const formData = new FormData();
+    formData.append("videoFile", data.videoFile);
+    formData.append("thumbnail", data.thumbnailFile);
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    // formData.append("category", data.category);
+    formData.append("isPublished", "true");
+
+    const response = await fetch(URL + "/videos", {
+      method: "POST",
+      // Remove Content-Type header - browser will set it automatically with boundary for FormData
+      credentials: "include",
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Upload error:", response.status, errorText);
+      
+      if (response.status === 413) {
+        throw new Error("File too large. Maximum upload size exceeded.");
+      }
+      
+      throw new Error(`Error uploading video: ${response.statusText}`);
+    }
+    
+    return response.json();
+  } catch (error: any) {
+    console.error("Video upload error:", error);
+    
+    // Check if it's a network error
+    if (error.name === 'TypeError') {
+      throw new Error("Network error. Please check your connection and try again.");
+    }
+    
+    throw new Error(error.message || "Failed to upload video. Please try again.");
   }
 };
