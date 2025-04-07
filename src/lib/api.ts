@@ -190,7 +190,7 @@ export const createVideo = async (data: {
 }) => {
   try {
     const formData = new FormData();
-    formData.append("videoFile", data.videoFile);
+    formData.append("video", data.videoFile);
     formData.append("thumbnail", data.thumbnailFile);
     formData.append("title", data.title);
     formData.append("description", data.description);
