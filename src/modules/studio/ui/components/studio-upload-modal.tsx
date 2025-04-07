@@ -1,8 +1,8 @@
 "use client";
 import ResponsiveModal from "@/components/responsive-dialog";
 import { Button } from "@/components/ui/button";
-import {  createVideo } from "@/lib/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {  createVideo, fetchCategories } from "@/lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2Icon, PlusIcon, Upload, X } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -26,6 +26,15 @@ export default function StudioUploadModal() {
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+
+  const {
+    data: categories,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
 
   const { mutate, isPending, data } = useMutation({
     mutationFn: createVideo,
@@ -246,25 +255,23 @@ export default function StudioUploadModal() {
               </div>
 
               {/* Category */}
-              {/* <div className="space-y-2">
+              <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
                 <Select value={form.category} onValueChange={handleCategoryChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Uncategorized">Uncategorized</SelectItem>
-                    <SelectItem value="Music">Music</SelectItem>
-                    <SelectItem value="Gaming">Gaming</SelectItem>
-                    <SelectItem value="Sports">Sports</SelectItem>
-                    <SelectItem value="Entertainment">Entertainment</SelectItem>
-                    <SelectItem value="Education">Education</SelectItem>
-                    <SelectItem value="Science & Technology">Science & Technology</SelectItem>
-                    <SelectItem value="Travel">Travel</SelectItem>
-                    <SelectItem value="News">News</SelectItem>
+                    {
+                    categories?.data.map((category:{
+                      _id: any;
+                      title: string;
+                    })=>
+                      <SelectItem value={category.title} key={category._id}>{category.title}</SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
-              </div> */}
+              </div>
 
               {/* Thumbnail */}
               <div className="space-y-2">

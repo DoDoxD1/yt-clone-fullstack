@@ -194,7 +194,7 @@ export const createVideo = async (data: {
     formData.append("thumbnail", data.thumbnailFile);
     formData.append("title", data.title);
     formData.append("description", data.description);
-    // formData.append("category", data.category);
+    formData.append("category", data.category);
     formData.append("isPublished", "true");
 
     const response = await fetch(URL + "/videos", {
