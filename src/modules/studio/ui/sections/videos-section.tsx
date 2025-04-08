@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
+import { VideoThumbnail } from "@/modules/videos/ui/components/video-thumbnail";
 
 export default function VideosSection() {
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
@@ -66,9 +67,9 @@ export default function VideosSection() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="pl-6 w-[510px]">Video</TableHead>
+              <TableHead className="pl-6">Video</TableHead>
+              <TableHead>Title</TableHead>
               <TableHead>Visibility</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
               <TableHead className="text-right">Views</TableHead>
               <TableHead className="text-right">Comments</TableHead>
@@ -83,11 +84,19 @@ export default function VideosSection() {
                 legacyBehavior
               >
                 <TableRow className="cursor-pointer">
+                  <TableCell>
+                    <div className="felx items-center gap-4">
+                      <div className="relative aspect-video w-36 shrink-0">
+                        <VideoThumbnail thumbnail={video.thumbnail} />
+                      </div>
+                    </div>
+                  </TableCell>
                   <TableCell>{video.title}</TableCell>
-                  <TableCell>Visibility</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Date</TableCell>
-                  <TableCell className="text-right">Views</TableCell>
+                  <TableCell>
+                    {video.isPublished ? "Published" : "Not Published"}
+                  </TableCell>
+                  <TableCell>{video.createdAt}</TableCell>
+                  <TableCell className="text-right">{video.views}</TableCell>
                   <TableCell className="text-right">Comments</TableCell>
                   <TableCell className="text-right pr-6">Likes</TableCell>
                 </TableRow>
