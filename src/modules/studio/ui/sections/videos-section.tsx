@@ -61,50 +61,108 @@ export default function VideosSection() {
   if (isError) return <div>Error: {(error as Error).message}</div>;
   if (!data) return null;
 
+  function formatDuration(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+
+    // Format with leading zeros
+    const formattedMinutes = String(minutes).padStart(2, "0");
+    const formattedSeconds = String(remainingSeconds).padStart(2, "0");
+
+    // If less than an hour, return mm:ss format
+    if (hours === 0) {
+      return `${formattedMinutes}:${formattedSeconds}`;
+    }
+
+    // Otherwise, return hh:mm:ss format
+    const formattedHours = String(hours).padStart(2, "0");
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+  }
+
   return (
     <div>
       <div className="border-y">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="pl-6">Video</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Visibility</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead className="pl-6 w-[510px]">Video</TableHead>
+              <TableHead className="text-right">Visibility</TableHead>
+              <TableHead className="text-right">Date</TableHead>
               <TableHead className="text-right">Category</TableHead>
               <TableHead className="text-right">Views</TableHead>
               <TableHead className="text-right pr-6">Likes</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {allVideos.map((video, index) => (
-              <Link
-                href={`/studio/videos/${video._id}`}
-                key={video._id || index}
-                legacyBehavior
-              >
-                <TableRow className="cursor-pointer">
-                  <TableCell>
-                    <div className="felx items-center gap-4">
-                      <div className="relative aspect-video w-36 shrink-0">
-                        <VideoThumbnail
-                          thumbnail={video.thumbnail}
-                          videoPreview={video.videoPreview}
-                        />
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{video.title}</TableCell>
-                  <TableCell>
-                    {video.isPublished ? "Published" : "Not Published"}
-                  </TableCell>
-                  <TableCell>{video.createdAt}</TableCell>
-                  <TableCell className="text-right">{video.category}</TableCell>
-                  <TableCell className="text-right">{video.views}</TableCell>
-                  <TableCell className="text-right pr-6">{0}</TableCell>
-                </TableRow>
-              </Link>
-            ))}
+            {allVideos.map(
+              (
+                video: {
+                  title: string;
+                  duration: number;
+                  thumbnail: string;
+                  videoPreview: string;
+                  _id: string;
+                  description: string;
+                  isPublished: boolean;
+                  createdAt: string;
+                  category: string;
+                  views: number;
+                },
+                index
+              ) => {
+                const {
+                  title,
+                  duration,
+                  thumbnail,
+                  videoPreview,
+                  _id,
+                  description,
+                  isPublished,
+                  createdAt,
+                  category,
+                  views,
+                } = video;
+                return (
+                  <Link
+                    href={`/studio/videos/${_id}`}
+                    key={_id || index}
+                    legacyBehavior
+                  >
+                    <TableRow className="cursor-pointer">
+                      <TableCell>
+                        <div className="flex items-center gap-4">
+                          <div className="relative aspect-video w-36 shrink-0">
+                            <VideoThumbnail
+                              thumbnail={thumbnail}
+                              videoPreview={videoPreview}
+                              duration={formatDuration(Math.trunc(duration))}
+                            />
+                          </div>
+                          <div className="flex flex-col overflow-hidden gap-y-1">
+                            <span className="text-sm line-clamp-1">
+                              {title}
+                            </span>
+                            <span className="text-xs text-muted-foreground line-clamp-1">
+                              {description}
+                            </span>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {isPublished ? "Published" : "Not Published"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {createdAt.split("T")[0]}
+                      </TableCell>
+                      <TableCell className="text-right">{category}</TableCell>
+                      <TableCell className="text-right">{views}</TableCell>
+                      <TableCell className="text-right pr-6">{0}</TableCell>
+                    </TableRow>
+                  </Link>
+                );
+              }
+            )}
           </TableBody>
         </Table>
       </div>

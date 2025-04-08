@@ -4,13 +4,13 @@ import { useState } from "react";
 export const VideoThumbnail = ({
   thumbnail,
   videoPreview,
+  duration,
 }: {
   thumbnail: string;
   videoPreview?: string;
+  duration: string;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-
-  console.log(videoPreview);
 
   return (
     <div
@@ -41,6 +41,9 @@ export const VideoThumbnail = ({
         )}
       </div>
       {/* Video duration box */}
+      <div className="absolute bottom-2 right-2 px-1 py-0.5 rounded bg-black/80 text-white tex-xs font-medium">
+        {duration || 0}
+      </div>
       {/* TODO: Add video duration box */}
     </div>
   );
