@@ -71,8 +71,8 @@ export default function VideosSection() {
               <TableHead>Title</TableHead>
               <TableHead>Visibility</TableHead>
               <TableHead>Date</TableHead>
+              <TableHead className="text-right">Category</TableHead>
               <TableHead className="text-right">Views</TableHead>
-              <TableHead className="text-right">Comments</TableHead>
               <TableHead className="text-right pr-6">Likes</TableHead>
             </TableRow>
           </TableHeader>
@@ -87,7 +87,10 @@ export default function VideosSection() {
                   <TableCell>
                     <div className="felx items-center gap-4">
                       <div className="relative aspect-video w-36 shrink-0">
-                        <VideoThumbnail thumbnail={video.thumbnail} />
+                        <VideoThumbnail
+                          thumbnail={video.thumbnail}
+                          videoPreview={video.videoPreview}
+                        />
                       </div>
                     </div>
                   </TableCell>
@@ -96,9 +99,9 @@ export default function VideosSection() {
                     {video.isPublished ? "Published" : "Not Published"}
                   </TableCell>
                   <TableCell>{video.createdAt}</TableCell>
+                  <TableCell className="text-right">{video.category}</TableCell>
                   <TableCell className="text-right">{video.views}</TableCell>
-                  <TableCell className="text-right">Comments</TableCell>
-                  <TableCell className="text-right pr-6">Likes</TableCell>
+                  <TableCell className="text-right pr-6">{0}</TableCell>
                 </TableRow>
               </Link>
             ))}
