@@ -4,6 +4,7 @@ import { DEFAULT_LIMIT } from "@/constants";
 import { fetchUserVideos } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
 import {
   Table,
   TableBody,
@@ -14,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { VideoThumbnail } from "@/modules/videos/ui/components/video-thumbnail";
+import { GlobeIcon, LockIcon } from "lucide-react";
 
 export default function VideosSection() {
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
@@ -87,9 +89,9 @@ export default function VideosSection() {
           <TableHeader>
             <TableRow>
               <TableHead className="pl-6 w-[510px]">Video</TableHead>
-              <TableHead className="text-right">Visibility</TableHead>
-              <TableHead className="text-right">Date</TableHead>
-              <TableHead className="text-right">Category</TableHead>
+              <TableHead className="">Visibility</TableHead>
+              <TableHead className="text-center">Date</TableHead>
+              <TableHead className="text-center">Category</TableHead>
               <TableHead className="text-right">Views</TableHead>
               <TableHead className="text-right pr-6">Likes</TableHead>
             </TableRow>
@@ -149,13 +151,23 @@ export default function VideosSection() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-right">
-                        {isPublished ? "Published" : "Not Published"}
+                      <TableCell className="flex items-center mt-7">
+                        {isPublished ? (
+                          <>
+                            <GlobeIcon className="size-4 mr-2" />
+                            {"Public"}
+                          </>
+                        ) : (
+                          <>
+                            <LockIcon className="size-4 mr-2" />
+                            {"Private"}
+                          </>
+                        )}
                       </TableCell>
-                      <TableCell className="text-right">
-                        {createdAt.split("T")[0]}
+                      <TableCell className="text-center text-sm truncate">
+                        {format(new Date(createdAt), "dd MMM yyyy")}
                       </TableCell>
-                      <TableCell className="text-right">{category}</TableCell>
+                      <TableCell className="text-center">{category}</TableCell>
                       <TableCell className="text-right">{views}</TableCell>
                       <TableCell className="text-right pr-6">{0}</TableCell>
                     </TableRow>
