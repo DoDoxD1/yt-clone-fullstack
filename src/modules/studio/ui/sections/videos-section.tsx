@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { VideoThumbnail } from "@/modules/videos/ui/components/video-thumbnail";
 import { GlobeIcon, LockIcon } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function VideosSection() {
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
@@ -59,7 +60,57 @@ export default function VideosSection() {
   };
 
   if (!isMounted) return null;
-  if (isLoading && allVideos.length === 0) return <div>Loading...</div>;
+  // if (isLoading && allVideos.length === 0) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <>
+        <div className="border-y">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="pl-6 w-[510px]">Video</TableHead>
+                <TableHead className="">Visibility</TableHead>
+                <TableHead className="text-center">Date</TableHead>
+                <TableHead className="text-center">Category</TableHead>
+                <TableHead className="text-right">Views</TableHead>
+                <TableHead className="text-right pr-6">Likes</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell className="pl-6">
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-20 w-36" />
+                      <div className="flex flex-col gap-2">
+                        <Skeleton className="h-4 w-[100px]" />
+                        <Skeleton className="h-3 w-[150px]" />
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="flex items-center mt-7">
+                    <Skeleton className="h-4 w-20" />
+                  </TableCell>
+                  <TableCell className="">
+                    <Skeleton className="h-4 w-24 ml-10" />
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Skeleton className="h-4 w-4" />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Skeleton className="h-4 w-4" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </>
+    );
+  }
   if (isError) return <div>Error: {(error as Error).message}</div>;
   if (!data) return null;
 
@@ -178,8 +229,6 @@ export default function VideosSection() {
           </TableBody>
         </Table>
       </div>
-      {/* Videos:{JSON.stringify(data)} */}
-
       <InfiniteScroll
         isManual={false}
         hasNextPage={data.pagination.hasMore || false}

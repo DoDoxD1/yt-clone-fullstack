@@ -187,6 +187,7 @@ export const createVideo = async (data: {
   title: string;
   description: string;
   category: string;
+  tags: string[];
 }) => {
   try {
     const formData = new FormData();
@@ -196,6 +197,7 @@ export const createVideo = async (data: {
     formData.append("description", data.description);
     formData.append("category", data.category);
     formData.append("isPublished", "true");
+    formData.append("tags", JSON.stringify(data.tags));
 
     const response = await fetch(URL + "/videos", {
       method: "POST",
@@ -203,27 +205,31 @@ export const createVideo = async (data: {
       credentials: "include",
       body: formData,
     });
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Upload error:", response.status, errorText);
-      
+
       if (response.status === 413) {
         throw new Error("File too large. Maximum upload size exceeded.");
       }
-      
+
       throw new Error(`Error uploading video: ${response.statusText}`);
     }
-    
+
     return response.json();
   } catch (error: any) {
     console.error("Video upload error:", error);
-    
+
     // Check if it's a network error
-    if (error.name === 'TypeError') {
-      throw new Error("Network error. Please check your connection and try again.");
+    if (error.name === "TypeError") {
+      throw new Error(
+        "Network error. Please check your connection and try again."
+      );
     }
-    
-    throw new Error(error.message || "Failed to upload video. Please try again.");
+
+    throw new Error(
+      error.message || "Failed to upload video. Please try again."
+    );
   }
 };

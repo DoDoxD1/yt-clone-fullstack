@@ -1,7 +1,7 @@
 "use client";
 import ResponsiveModal from "@/components/responsive-dialog";
 import { Button } from "@/components/ui/button";
-import {  createVideo, fetchCategories } from "@/lib/api";
+import { createVideo, fetchCategories } from "@/lib/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2Icon, PlusIcon, Upload, X } from "lucide-react";
 import React, { useState } from "react";
@@ -9,7 +9,13 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 
 export default function StudioUploadModal() {
@@ -21,6 +27,7 @@ export default function StudioUploadModal() {
     video: undefined as File | undefined,
     thumbnail: undefined as File | undefined,
     category: "Uncategorized",
+    tags: [] as string[],
   });
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
@@ -57,12 +64,15 @@ export default function StudioUploadModal() {
       video: undefined,
       thumbnail: undefined,
       category: "Uncategorized",
+      tags: [],
     });
     setVideoPreview(null);
     setThumbnailPreview(null);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
@@ -71,31 +81,47 @@ export default function StudioUploadModal() {
     setForm({ ...form, category: value });
   };
 
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tags = e.target.value
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
+    setForm({ ...form, tags });
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (files && files.length > 0) {
       const file = files[0];
-      
+
       // Check file size for video uploads (10MB = 10 * 1024 * 1024 bytes)
       const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB
       const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
-      
+
       if (name === "video" && file.size > MAX_VIDEO_SIZE) {
-        toast.error(`Video file is too large. Maximum size is ${MAX_VIDEO_SIZE / (1024 * 1024)}MB.`);
-        e.target.value = ''; // Reset the input
+        toast.error(
+          `Video file is too large. Maximum size is ${
+            MAX_VIDEO_SIZE / (1024 * 1024)
+          }MB.`
+        );
+        e.target.value = ""; // Reset the input
         return;
       }
-      
+
       if (name === "thumbnailFile" && file.size > MAX_IMAGE_SIZE) {
-        toast.error(`Thumbnail is too large. Maximum size is ${MAX_IMAGE_SIZE / (1024 * 1024)}MB.`);
-        e.target.value = ''; // Reset the input
+        toast.error(
+          `Thumbnail is too large. Maximum size is ${
+            MAX_IMAGE_SIZE / (1024 * 1024)
+          }MB.`
+        );
+        e.target.value = ""; // Reset the input
         return;
       }
-      
+
       // Map the input name to the state property name
       const fieldName = name === "thumbnailFile" ? "thumbnail" : name;
       setForm({ ...form, [fieldName]: file });
-      
+
       // Create preview URLs
       if (name === "video" && file.type.startsWith("video/")) {
         const url = URL.createObjectURL(file);
@@ -125,33 +151,34 @@ export default function StudioUploadModal() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Check if required files exist
     if (!form.video) {
       toast.error("Video file is required");
       return;
     }
-    
+
     if (!form.thumbnail) {
       toast.error("Thumbnail is required");
       return;
     }
-    
+
     // Create object with the expected structure for createVideo
     const videoData = {
       videoFile: form.video,
       thumbnailFile: form.thumbnail,
       title: form.title,
       description: form.description,
-      category: form.category
+      category: form.category,
+      tags: form.tags,
     };
-    
+
     toast.info("Uploading video... This may take a while.");
     setIsUploading(true);
-    
+
     // Simulate progress for better UX (since we don't have actual upload progress)
     const progressInterval = setInterval(() => {
-      setUploadProgress(prev => {
+      setUploadProgress((prev) => {
         if (prev >= 95) {
           clearInterval(progressInterval);
           return prev;
@@ -159,7 +186,7 @@ export default function StudioUploadModal() {
         return prev + 5;
       });
     }, 500);
-    
+
     // Pass videoData to the createVideo mutation
     mutate(videoData, {
       onSettled: () => {
@@ -169,7 +196,7 @@ export default function StudioUploadModal() {
       },
       onSuccess: () => {
         setUploadProgress(100);
-      }
+      },
     });
   };
 
@@ -197,8 +224,12 @@ export default function StudioUploadModal() {
                   {!videoPreview ? (
                     <div className="border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center">
                       <Upload className="h-10 w-10 text-muted-foreground mb-2" />
-                      <p className="text-sm text-muted-foreground mb-1">Drag and drop or click to upload</p>
-                      <p className="text-xs text-muted-foreground">MP4, WebM or MOV (max 2GB)</p>
+                      <p className="text-sm text-muted-foreground mb-1">
+                        Drag and drop or click to upload
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        MP4, WebM or MOV (max 2GB)
+                      </p>
                       <Input
                         id="video"
                         name="video"
@@ -211,9 +242,9 @@ export default function StudioUploadModal() {
                     </div>
                   ) : (
                     <div className="relative rounded-md overflow-hidden">
-                      <video 
-                        controls 
-                        src={videoPreview} 
+                      <video
+                        controls
+                        src={videoPreview}
                         className="w-full h-auto max-h-[200px] object-contain bg-black"
                       />
                       <button
@@ -257,20 +288,38 @@ export default function StudioUploadModal() {
               {/* Category */}
               <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
-                <Select value={form.category} onValueChange={handleCategoryChange}>
+                <Select
+                  value={form.category}
+                  onValueChange={handleCategoryChange}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {
-                    categories?.data.map((category:{
-                      _id: any;
-                      title: string;
-                    })=>
-                      <SelectItem value={category.title} key={category._id}>{category.title}</SelectItem>
+                    {categories?.data.map(
+                      (category: { _id: any; title: string }) => (
+                        <SelectItem value={category.title} key={category._id}>
+                          {category.title}
+                        </SelectItem>
+                      )
                     )}
                   </SelectContent>
                 </Select>
+              </div>
+
+              {/* Tags */}
+              <div className="space-y-2">
+                <Label htmlFor="tags">Tags</Label>
+                <Input
+                  id="tags"
+                  name="tags"
+                  value={form.tags.join(", ")}
+                  onChange={handleTagsChange}
+                  placeholder="Add tags separated by commas (e.g. gaming, tutorial, tech)"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Add relevant tags to help viewers find your video
+                </p>
               </div>
 
               {/* Thumbnail */}
@@ -280,7 +329,9 @@ export default function StudioUploadModal() {
                   {!thumbnailPreview ? (
                     <div className="border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center">
                       <Upload className="h-6 w-6 text-muted-foreground mb-2" />
-                      <p className="text-sm text-muted-foreground">Upload thumbnail image</p>
+                      <p className="text-sm text-muted-foreground">
+                        Upload thumbnail image
+                      </p>
                       <Input
                         id="thumbnailFile"
                         name="thumbnailFile"
@@ -292,9 +343,9 @@ export default function StudioUploadModal() {
                     </div>
                   ) : (
                     <div className="relative rounded-md overflow-hidden">
-                      <img 
-                        src={thumbnailPreview} 
-                        alt="Thumbnail preview" 
+                      <img
+                        src={thumbnailPreview}
+                        alt="Thumbnail preview"
                         className="w-full h-auto max-h-[100px] object-contain"
                       />
                       <button
@@ -316,7 +367,7 @@ export default function StudioUploadModal() {
             {isUploading && (
               <div className="mb-4">
                 <p className="text-sm mb-2 text-center">
-                  {uploadProgress < 100 
+                  {uploadProgress < 100
                     ? "Uploading video... Please don't close this window."
                     : "Processing video... This will complete shortly."}
                 </p>
@@ -324,8 +375,13 @@ export default function StudioUploadModal() {
               </div>
             )}
             <div className="flex justify-end">
-              <Button type="submit" disabled={isPending || !form.video || isUploading}>
-                {isPending ? <Loader2Icon className="mr-2 h-4 w-4 animate-spin" /> : null}
+              <Button
+                type="submit"
+                disabled={isPending || !form.video || isUploading}
+              >
+                {isPending ? (
+                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
                 Upload Video
               </Button>
             </div>
