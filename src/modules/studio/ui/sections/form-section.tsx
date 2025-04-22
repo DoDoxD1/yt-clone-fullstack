@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreVerticalIcon, TrashIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -27,9 +26,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchCategories, updateVideo } from "@/lib/api";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
 interface FormSectionProps {
   videoId: string;
@@ -50,10 +50,17 @@ interface FormSectionProps {
   videoPreview: string;
   createdAt: string;
 }
+
 export const FormSection = (video: FormSectionProps) => {
+  const [isMounted, setIsMounted] = useState(false);
+  const queryClient = useQueryClient();
   const form = useForm({
     defaultValues: video,
   });
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const {
     data: categories,
@@ -68,17 +75,25 @@ export const FormSection = (video: FormSectionProps) => {
     mutationFn: updateVideo,
     onSuccess: (response) => {
       //TO refresh videos
-      // queryClient.invalidateQueries({ queryKey: ["get-user-videos"] });
-      toast.success("Video Updated!" + response);
+      queryClient.invalidateQueries({ queryKey: ["get-user-videos"] });
+      queryClient.invalidateQueries({
+        queryKey: ["user-video-" + response.data._id],
+      });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      toast.success("Video Updated!");
     },
     onError: (error) => {
-      toast.error(error.message);
+      toast.error("Something went wrong!");
     },
   });
 
   const onSubmit = async (data: FormSectionProps) => {
     mutate(data);
   };
+
+  if (!isMounted) {
+    return null; // Return nothing during SSR
+  }
 
   return (
     <Form {...form}>
@@ -91,7 +106,7 @@ export const FormSection = (video: FormSectionProps) => {
             </p>
           </div>
           <div className="flex items-center gap-x-2">
-            <Button type="submit" disabled={false}>
+            <Button type="submit" disabled={isPending}>
               Save
             </Button>
             <DropdownMenu>

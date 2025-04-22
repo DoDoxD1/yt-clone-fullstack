@@ -27,7 +27,7 @@ export default function VideosSection() {
   const [isMounted, setIsMounted] = useState(false);
 
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ["posts", limit, sortOrder, currentCursor],
+    queryKey: ["get-user-videos", limit, sortOrder, currentCursor],
     queryFn: () =>
       fetchUserVideos({
         cursor: currentCursor || undefined,
