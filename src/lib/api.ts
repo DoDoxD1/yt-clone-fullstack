@@ -233,3 +233,17 @@ export const createVideo = async (data: {
     );
   }
 };
+
+export const fetchUserVideo = async (id: string) => {
+  try {
+    const res = await fetch(URL + "/dashboard/videos/" + id, {
+      method: "GET",
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch video");
+    const video = await res.json();
+    return video?.data[0];
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};

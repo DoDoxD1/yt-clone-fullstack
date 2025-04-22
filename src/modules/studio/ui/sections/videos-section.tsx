@@ -78,30 +78,65 @@ export default function VideosSection() {
             </TableHeader>
             <TableBody>
               {Array.from({ length: 5 }).map((_, index) => (
+                // <TableRow key={index}>
+                //   <TableCell className="pl-6">
+                //     <div className="flex items-center gap-4">
+                //       <Skeleton className="h-20 w-36" />
+                //       <div className="flex flex-col gap-2">
+                //         <Skeleton className="h-4 w-[100px]" />
+                //         <Skeleton className="h-3 w-[150px]" />
+                //       </div>
+                //     </div>
+                //   </TableCell>
+                //   <TableCell className="flex items-center mt-7">
+                //     <Skeleton className="h-4 w-20" />
+                //   </TableCell>
+                //   <TableCell className="">
+                //     <Skeleton className="h-4 w-16" />
+                //   </TableCell>
+                //   <TableCell className="text-center">
+                //     <Skeleton className="h-4 w-24" />
+                //   </TableCell>
+                //   <TableCell className="text-right">
+                //     <Skeleton className="h-4 w-12" />
+                //   </TableCell>
+                //   <TableCell className="text-right">
+                //     <Skeleton className="h-4 w-12" />
+                //   </TableCell>
+                // </TableRow>
                 <TableRow key={index}>
-                  <TableCell className="pl-6">
+                  <TableCell>
                     <div className="flex items-center gap-4">
-                      <Skeleton className="h-20 w-36" />
-                      <div className="flex flex-col gap-2">
-                        <Skeleton className="h-4 w-[100px]" />
-                        <Skeleton className="h-3 w-[150px]" />
+                      <div className="relative aspect-video w-36 shrink-0">
+                        <Skeleton className="h-20 w-36" />
+                      </div>
+                      <div className="flex flex-col overflow-hidden gap-y-1">
+                        <span className="text-sm line-clamp-1">
+                          <Skeleton className="h-4 w-[100px]" />
+                        </span>
+                        <span className="text-xs text-muted-foreground line-clamp-1">
+                          <Skeleton className="h-3 w-[150px]" />
+                        </span>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="flex items-center mt-7">
-                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-4" /> // Visibility
                   </TableCell>
-                  <TableCell className="">
-                    <Skeleton className="h-4 w-24 ml-10" />
+                  <TableCell className="text-center text-sm truncate">
+                    <Skeleton className="h-4 w-16" />
                   </TableCell>
                   <TableCell className="text-center">
+                    {" "}
                     <Skeleton className="h-4 w-16" />
                   </TableCell>
                   <TableCell className="text-right">
-                    <Skeleton className="h-4 w-4" />
+                    {" "}
+                    <Skeleton className="h-4 w-24" />
                   </TableCell>
-                  <TableCell className="text-right">
-                    <Skeleton className="h-4 w-4" />
+                  <TableCell className="text-right pr-6">
+                    {" "}
+                    <Skeleton className="h-4 w-12" />
                   </TableCell>
                 </TableRow>
               ))}
