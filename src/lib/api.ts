@@ -247,3 +247,49 @@ export const fetchUserVideo = async (id: string) => {
     throw new Error(error);
   }
 };
+
+export const updateVideo = async (data: {
+  videoId: string;
+  videoFile: string;
+  thumbnail: string;
+  owner: {
+    _id: string;
+    username: string;
+    fullName: string;
+    avatar: string;
+  };
+  title: string;
+  description: string;
+  duration: number;
+  views: number;
+  category: string;
+  isPublished: boolean;
+  videoPreview: string;
+  createdAt: string;
+}) => {
+  try {
+    const response = await fetch(URL + "/dashboard/videos/" + data.videoId, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: data.title,
+        description: data.description,
+        category: data.category,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Update error:", response.status, errorText);
+
+      throw new Error(`Error updating video: ${response.statusText}`);
+    }
+
+    return response.json();
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
